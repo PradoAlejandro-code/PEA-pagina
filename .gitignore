@@ -1,0 +1,19 @@
+# --- General ---
+.DS_Store
+.env
+*.local
+
+# --- Frontend (TanStack/Node) ---
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+frontend/.nitro/
+frontend/.tanstack/
+frontend/.wrangler/
+frontend/.output/
+frontend/.vinxi/
+frontend/__unconfig*
+
+# --- Backend (Go) ---
+
+# --- hacelo antes de subir  ---
