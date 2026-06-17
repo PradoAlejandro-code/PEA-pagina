@@ -15,5 +15,5 @@ frontend/.vinxi/
 frontend/__unconfig*
 
 # --- Backend (Go) ---
-
-# --- hacelo antes de subir  ---
+backend/.env
+backend/media/
