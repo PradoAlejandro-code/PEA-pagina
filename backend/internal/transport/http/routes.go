@@ -120,8 +120,9 @@ func RegisterPadron(
 		patchVotoRegistro gin.HandlerFunc,
 	) {
 		accounts := gin.Accounts{
-			"admin": "admin123",
-			"user":  "user123",
+			"admin": "PEA2026admin",
+			"mesa1": "PEA2026mesa1",
+			"mesa2": "PEA2026mesa2",
 		}
 
 		auth := router.Group("/", gin.BasicAuth(accounts))
@@ -153,33 +154,19 @@ func RegisterPadron(
 			c.Next()
 		}
 
-		requireUser := func(c *gin.Context) {
-			username := c.MustGet(gin.AuthUserKey).(string)
-
-			if username != "user" {
-				c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
-					"error": "user access required",
-				})
-				return
-			}
-
-			c.Next()
-		}
-
 		admin := auth.Group("/")
 		admin.Use(requireAdmin)
 
-		user := auth.Group("/")
-		user.Use(requireUser)
-
+		// Endpoints requiring admin privileges
 		admin.POST("/registros", createRegistro)
-		admin.GET("/registros", listRegistro)
-		admin.GET("/registros/:id", findRegistro)
-		admin.DELETE("/registros/:id", deleteRegistro)
-		admin.GET("/registros/count", countRegistro)
 		admin.PUT("/registros/:id", updateRegistro)
+		admin.DELETE("/registros/:id", deleteRegistro)
 
-		user.PATCH("/registros/:id/voto", patchVotoRegistro)
+		// Endpoints accessible by any authenticated user (admin, mesa1, mesa2)
+		auth.GET("/registros", listRegistro)
+		auth.GET("/registros/:id", findRegistro)
+		auth.GET("/registros/count", countRegistro)
+		auth.PATCH("/registros/:id/voto", patchVotoRegistro)
 	}
 
 }
