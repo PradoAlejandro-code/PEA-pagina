@@ -56,7 +56,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body className="font-sans antialiased [overflow-wrap:anywhere] selection:bg-[rgba(79,184,178,0.24)] flex flex-col min-h-screen">
+      <body suppressHydrationWarning className="font-sans antialiased [overflow-wrap:anywhere] selection:bg-[rgba(79,184,178,0.24)] flex flex-col min-h-screen">
         {!isStandalone && <Header />}
         <div className="flex-grow flex flex-col w-full">
           {children}

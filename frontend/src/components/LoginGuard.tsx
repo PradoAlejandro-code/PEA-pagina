@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react'
+import { useState, useEffect, type ReactNode } from 'react'
 import { Eye, EyeOff, LogIn, ShieldCheck, Users } from 'lucide-react'
 import { useAuth, useAdminLogin, usePadronLogin, type AuthScope } from '../hooks/auth'
 import type { AuthRole } from '../features/api/auth'
@@ -25,6 +25,11 @@ const SCOPE_LABELS: Record<AuthScope, { title: string; subtitle: string; icon: t
 
 export default function LoginGuard({ scope, requiredRole, children }: LoginGuardProps) {
   const { isAuthenticated, role, setAuthenticated } = useAuth(scope)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const adminMutation = useAdminLogin()
   const padronMutation = usePadronLogin()
@@ -37,7 +42,7 @@ export default function LoginGuard({ scope, requiredRole, children }: LoginGuard
   const [localError, setLocalError] = useState<string | null>(null)
 
   // Si está autenticado y el rol es correcto → mostrar contenido
-  const hasAccess = isAuthenticated && (!requiredRole || role === requiredRole)
+  const hasAccess = mounted && isAuthenticated && (!requiredRole || role === requiredRole)
   if (hasAccess) {
     return <>{children}</>
   }

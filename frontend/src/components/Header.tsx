@@ -12,7 +12,7 @@ export default function Header() {
 
   const menuItems = [
     { label: 'Historia', to: '/historia', coming: true },
-    { label: 'Noticias', to: '/noticias' },
+    { label: 'Noticias', to: '/noticias', coming: true },
     {
       label: 'Estudiantes',
       items: [
