@@ -1,0 +1,67 @@
+========================================================================
+GUÍA DE DESPLIEGUE DEL PROYECTO (PEA) EN EL SERVIDOR / VPS
+========================================================================
+
+Esta guía detalla los comandos para configurar el backend de Go y el 
+frontend de Node.js (TanStack Start) en el servidor.
+
+1. CLONAR E INSTALAR EL REPOSITORIO
+------------------------------------------------------------------------
+Clonar el código en el directorio deseado del servidor y cambiarse a 
+la rama principal "main":
+
+  git clone https://github.com/PradoAlejandro-code/PEA-pagina.git
+  cd PEA-pagina
+  git checkout main
+
+2. BASE DE DATOS (DOCKER)
+------------------------------------------------------------------------
+La base de datos corre sobre PostgreSQL 16 a través de Docker Compose.
+
+  cd backend
+  cp .env.example .env
+
+  # Ajustar las credenciales en backend/.env si es necesario.
+  # Por defecto viene configurado para conectar localmente:
+  # DATABASE_URL="host=localhost user=postgres password=postgres dbname=pea port=5432 sslmode=disable"
+
+  docker compose up -d
+
+3. BACKEND (GO)
+------------------------------------------------------------------------
+El backend escucha por defecto en el puerto :8080.
+
+  # Instalar dependencias de Go:
+  go mod download
+
+  # Correr las migraciones iniciales y poblar el padrón electoral:
+  go run cmd/migrator/main.go
+
+  # Compilar para producción:
+  go build -o pea-api cmd/api/main.go
+
+  # Ejecutar en producción (se recomienda crear un servicio de systemd
+  # o correr con nohup/screen/pm2):
+  ./pea-api
+
+4. FRONTEND (TANSTACK START / NODE)
+------------------------------------------------------------------------
+El frontend corre un servidor SSR basado en Node que escucha por defecto
+en el puerto :3000.
+
+  cd ../frontend
+  touch .env
+
+  # Escribir la URL pública de la API del backend en frontend/.env:
+  VITE_API_URL="https://api.tudominio.com"
+
+  # Instalar dependencias:
+  npm install
+
+  # Compilar para producción:
+  npm run build
+
+  # Levantar el servidor en segundo plano con PM2:
+  pm2 start .output/server/index.mjs --name "pea-frontend" --env PORT=3000
+  pm2 save
+========================================================================
