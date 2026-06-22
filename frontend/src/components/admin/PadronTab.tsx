@@ -19,7 +19,8 @@ export function PadronTab() {
   const [importError, setImportError] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const { data: registros = [], isLoading } = useRegistros('todos')
+  const { data: registrosData, isLoading } = useRegistros('todos')
+  const registros = registrosData || []
   const total = registros.length
   const votaron = registros.filter(r => r.voto).length
   const noVotaron = registros.filter(r => !r.voto).length

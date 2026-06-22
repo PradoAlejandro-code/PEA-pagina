@@ -33,7 +33,8 @@ function MesaContent() {
   const [page, setPage] = useState(1)
   const [confirmVoto, setConfirmVoto] = useState<Registro | null>(null)
 
-  const { data: registros = [], isLoading } = useRegistros('todos')
+  const { data: registrosData, isLoading } = useRegistros('todos')
+  const registros = registrosData || []
   const votaron = registros.filter((r) => r.voto).length
   const noVotaron = registros.filter((r) => !r.voto).length
   const patchVotoMutation = usePatchVoto()
