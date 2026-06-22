@@ -1,9 +1,10 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
-import { Search, Loader2, LogOut, AlertTriangle } from 'lucide-react'
+import { Search, Loader2, LogOut, AlertTriangle, Send } from 'lucide-react'
 import LoginGuard from '../components/LoginGuard'
 import { useAuth } from '../hooks/auth'
 import { useRegistros, usePatchVoto } from '../hooks/registros'
+import { useCreateVote } from '../hooks/votes'
 
 interface Registro {
   id: number
@@ -38,6 +39,11 @@ function MesaContent() {
   const votaron = registros.filter((r) => r.voto).length
   const noVotaron = registros.filter((r) => !r.voto).length
   const patchVotoMutation = usePatchVoto()
+  const createVoteMutation = useCreateVote()
+
+  const [showCargarVotos, setShowCargarVotos] = useState(false)
+  const [peaVotes, setPeaVotes] = useState('')
+  const [uplVotes, setUplVotes] = useState('')
 
   // Reset page when search query changes
   useEffect(() => {
@@ -80,6 +86,19 @@ function MesaContent() {
     )
   }
 
+  const handleCargarVotos = () => {
+    const pea = parseInt(peaVotes, 10) || 0
+    const upl = parseInt(uplVotes, 10) || 0
+    createVoteMutation.mutate({ pea_votes: pea, upl_votes: upl }, {
+      onSuccess: () => {
+        setShowCargarVotos(false)
+        setPeaVotes('')
+        setUplVotes('')
+        alert('Votos cargados exitosamente')
+      }
+    })
+  }
+
   return (
     <div className="min-h-screen bg-[#1a2e42] flex flex-col text-white select-none">
       {/* ── Top Header Bar ── */}
@@ -116,15 +135,24 @@ function MesaContent() {
         </div>
 
         {/* ── Search Input ── */}
-        <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-white/30" />
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Buscar por DNI o Nº de Orden..."
-            className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-white/30 text-sm focus:outline-none focus:ring-2 focus:ring-[#2b7fff]/50 transition-all font-medium"
-          />
+        <div className="flex gap-3">
+          <div className="relative flex-1">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-white/30" />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Buscar por DNI o Nº de Orden..."
+              className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-white/30 text-sm focus:outline-none focus:ring-2 focus:ring-[#2b7fff]/50 transition-all font-medium"
+            />
+          </div>
+          <button
+            onClick={() => setShowCargarVotos(true)}
+            className="px-4 py-3 bg-[#2b7fff] hover:bg-[#1a6ee6] text-white font-bold rounded-2xl flex items-center gap-2 transition-colors cursor-pointer shrink-0"
+          >
+            <Send className="h-4 w-4" />
+            <span className="hidden sm:inline">Cargar Votos</span>
+          </button>
         </div>
 
         {/* ── Voters Grid ── */}
@@ -218,6 +246,57 @@ function MesaContent() {
               </button>
               <button
                 onClick={() => setConfirmVoto(null)}
+                className="w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white/60 font-bold text-sm cursor-pointer transition-all"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Modal Cargar Votos ── */}
+      {showCargarVotos && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-150">
+          <div className="bg-[#152333] border border-white/10 rounded-3xl p-6 w-full max-w-sm space-y-4 shadow-2xl animate-in zoom-in-95 duration-150">
+            <div className="text-center space-y-2">
+              <h3 className="text-lg font-extrabold text-white">Cargar Votos Contados</h3>
+              <p className="text-white/50 text-xs">Ingresa la cantidad de votos contados en esta mesa.</p>
+            </div>
+
+            <div className="space-y-4 mt-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-white/60 uppercase tracking-wider">Votos PEA</label>
+                <input
+                  type="number"
+                  value={peaVotes}
+                  onChange={(e) => setPeaVotes(e.target.value)}
+                  placeholder="Ej: 10"
+                  className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#2b7fff]/50"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-white/60 uppercase tracking-wider">Votos UPL</label>
+                <input
+                  type="number"
+                  value={uplVotes}
+                  onChange={(e) => setUplVotes(e.target.value)}
+                  placeholder="Ej: 5"
+                  className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-orange-500/50"
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2 pt-4">
+              <button
+                onClick={handleCargarVotos}
+                disabled={createVoteMutation.isPending}
+                className="w-full py-3 rounded-xl bg-[#2b7fff] hover:bg-[#1a6ee6] text-white font-bold text-sm cursor-pointer transition-all duration-150"
+              >
+                {createVoteMutation.isPending ? 'Enviando...' : 'Enviar Votos'}
+              </button>
+              <button
+                onClick={() => setShowCargarVotos(false)}
                 className="w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white/60 font-bold text-sm cursor-pointer transition-all"
               >
                 Cancelar

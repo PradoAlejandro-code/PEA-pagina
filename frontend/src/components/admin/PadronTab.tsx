@@ -4,6 +4,7 @@ import { Card, CardTitle } from '../ui/card'
 import { Input } from '../ui/input'
 import { EmptyState } from '../ui/empty-state'
 import { useRegistros, useCreateRegistro, useDeleteRegistro } from '../../hooks/registros'
+import { useVoteSummary } from '../../hooks/votes'
 import * as XLSX from 'xlsx'
 
 export function PadronTab() {
@@ -20,6 +21,7 @@ export function PadronTab() {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const { data: registrosData, isLoading } = useRegistros('todos')
+  const { data: votesData } = useVoteSummary()
   const registros = registrosData || []
   const total = registros.length
   const votaron = registros.filter(r => r.voto).length
@@ -251,6 +253,18 @@ export function PadronTab() {
               <p className="text-white/40 text-xs mt-1">{label}</p>
             </div>
           ))}
+        </div>
+
+        {/* Votes Stats */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-[#2b7fff]/10 backdrop-blur-md rounded-2xl border border-[#2b7fff]/20 p-4 text-center">
+            <p className="text-2xl font-extrabold text-[#2b7fff]">{votesData?.pea_total ?? 0}</p>
+            <p className="text-white/50 text-[10px] font-bold uppercase tracking-wider mt-1">Votos PEA</p>
+          </div>
+          <div className="bg-orange-500/10 backdrop-blur-md rounded-2xl border border-orange-500/20 p-4 text-center">
+            <p className="text-2xl font-extrabold text-orange-400">{votesData?.upl_total ?? 0}</p>
+            <p className="text-white/50 text-[10px] font-bold uppercase tracking-wider mt-1">Votos UPL</p>
+          </div>
         </div>
 
         {/* Filter + Search */}
