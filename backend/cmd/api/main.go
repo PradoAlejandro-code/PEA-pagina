@@ -40,6 +40,7 @@ func main() {
 	tutorialSuggestionRepository := repositories.NewPostgresTutorialSuggestionRepository(db)
 	tutoringRepository := repositories.NewPostgresTutoringRepository(db)
 	newRepository := repositories.NewPostgresNewRepository(db)
+	voteRepository := repositories.NewPostgresVoteRepository(db)
 
 	//services
 
@@ -52,6 +53,7 @@ func main() {
 	tutorialSuggestionService := services.NewTutorialSuggestionService(tutorialSuggestionRepository)
 	tutoringService := services.NewTutoringService(tutoringRepository, fileStorage)
 	newService := services.NewNewService(newRepository, fileStorage)
+	voteService := services.NewVoteService(voteRepository)
 
 	//handlers
 
@@ -64,6 +66,7 @@ func main() {
 	tutorialSuggestionHandler := handlers.NewTutorialSuggestionHandler(tutorialSuggestionService)
 	tutoringHandler := handlers.NewTutoringHandler(tutoringService)
 	newHandler := handlers.NewNewHandler(newService)
+	voteHandler := handlers.NewVoteHandler(voteService)
 
 	router := gin.New()
 	router.Use(gin.Logger())
@@ -94,7 +97,7 @@ func main() {
 		newHandler,
 	)
 
-	httptransport.RegisterPadron(router)(handlers.InitRegistroHandlers(repositories.InitRegistroRepo(db)))
+	httptransport.RegisterPadron(router, voteHandler)(handlers.InitRegistroHandlers(repositories.InitRegistroRepo(db)))
 
 	log.Printf("Local:   http://localhost:8080")
 	err = router.Run(":8080")

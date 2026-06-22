@@ -109,6 +109,7 @@ func RegisterRoutes(
 
 func RegisterPadron(
 	router *gin.Engine,
+	voteHandler *handlers.VoteHandler,
 ) func(gin.HandlerFunc, gin.HandlerFunc, gin.HandlerFunc, gin.HandlerFunc, gin.HandlerFunc, gin.HandlerFunc, gin.HandlerFunc) {
 	return func(
 		createRegistro gin.HandlerFunc,
@@ -123,6 +124,7 @@ func RegisterPadron(
 			"admin": "PEA2026admin",
 			"mesa1": "PEA2026mesa1",
 			"mesa2": "PEA2026mesa2",
+			"mesa3": "PEA2026mesa3",
 		}
 
 		auth := router.Group("/", gin.BasicAuth(accounts))
@@ -167,6 +169,11 @@ func RegisterPadron(
 		auth.GET("/registros/:id", findRegistro)
 		auth.GET("/registros/count", countRegistro)
 		auth.PATCH("/registros/:id/voto", patchVotoRegistro)
+
+		if voteHandler != nil {
+			auth.POST("/votes", voteHandler.Create)
+			admin.GET("/votes/summary", voteHandler.GetSummary)
+		}
 	}
 
 }
