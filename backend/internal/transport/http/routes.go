@@ -2,6 +2,7 @@ package http
 
 import (
 	"PeaBackEnd/internal/transport/http/handlers"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -104,4 +105,81 @@ func RegisterRoutes(
 		news.DELETE("/:id", newHandler.Delete)
 		news.PATCH("/:id/file", newHandler.UpdateFile)
 	}
+}
+
+func RegisterPadron(
+	router *gin.Engine,
+) func(gin.HandlerFunc, gin.HandlerFunc, gin.HandlerFunc, gin.HandlerFunc, gin.HandlerFunc, gin.HandlerFunc, gin.HandlerFunc) {
+	return func(
+		createRegistro gin.HandlerFunc,
+		listRegistro gin.HandlerFunc,
+		findRegistro gin.HandlerFunc,
+		updateRegistro gin.HandlerFunc,
+		deleteRegistro gin.HandlerFunc,
+		countRegistro gin.HandlerFunc,
+		patchVotoRegistro gin.HandlerFunc,
+	) {
+		accounts := gin.Accounts{
+			"admin": "admin123",
+			"user":  "user123",
+		}
+
+		auth := router.Group("/", gin.BasicAuth(accounts))
+
+		auth.GET("/me", func(c *gin.Context) {
+			username := c.MustGet(gin.AuthUserKey).(string)
+
+			role := "user"
+			if username == "admin" {
+				role = "admin"
+			}
+
+			c.JSON(http.StatusOK, gin.H{
+				"username": username,
+				"role":     role,
+			})
+		})
+
+		requireAdmin := func(c *gin.Context) {
+			username := c.MustGet(gin.AuthUserKey).(string)
+
+			if username != "admin" {
+				c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
+					"error": "admin access required",
+				})
+				return
+			}
+
+			c.Next()
+		}
+
+		requireUser := func(c *gin.Context) {
+			username := c.MustGet(gin.AuthUserKey).(string)
+
+			if username != "user" {
+				c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
+					"error": "user access required",
+				})
+				return
+			}
+
+			c.Next()
+		}
+
+		admin := auth.Group("/")
+		admin.Use(requireAdmin)
+
+		user := auth.Group("/")
+		user.Use(requireUser)
+
+		admin.POST("/registros", createRegistro)
+		admin.GET("/registros", listRegistro)
+		admin.GET("/registros/:id", findRegistro)
+		admin.DELETE("/registros/:id", deleteRegistro)
+		admin.GET("/registros/count", countRegistro)
+		admin.PUT("/registros/:id", updateRegistro)
+
+		user.PATCH("/registros/:id/voto", patchVotoRegistro)
+	}
+
 }
