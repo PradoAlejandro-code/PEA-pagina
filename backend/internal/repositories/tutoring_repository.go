@@ -11,7 +11,7 @@ type TutoringRepository interface {
 	Create(tutoring domain.Tutoring) (domain.Tutoring, error)
 	List() ([]domain.Tutoring, error)
 	FindByID(id int) (domain.Tutoring, error)
-	Update(tutoring domain.Tutoring) (domain.Tutoring, error)
+	Update(tutoring domain.Tutoring, updatedFields []string) (domain.Tutoring, error)
 	Delete(id int) error
 }
 
@@ -55,52 +55,24 @@ func toModelTutoring(d domain.Tutoring) models.TutoringModel {
 	}
 }
 
-func replaceTutors(db *gorm.DB, tutoringID int, tutors []domain.Tutor) ([]domain.Tutor, error) {
-	var tutorIDs []int
-
-	for _, tutor := range tutors {
-		tutorIDs = append(tutorIDs, tutor.ID)
-	}
+func (r *PostgresTutoringRepository) Create(tutoring domain.Tutoring) (domain.Tutoring, error) {
+	createdModel := toModelTutoring(tutoring)
 
 	var tutorModels []models.TutorModel
-
-	if len(tutorIDs) > 0 {
-		if err := db.Find(&tutorModels, tutorIDs).Error; err != nil {
-			return nil, err
-		}
+	for _, tutor := range tutoring.Tutors {
+		tutorModels = append(tutorModels, models.TutorModel{ID: tutor.ID})
 	}
 
-	if err := db.Model(&models.TutoringModel{ID: tutoringID}).
-		Association("Tutors").
-		Replace(&tutorModels); err != nil {
-		return nil, err
-	}
-
-	var result []domain.Tutor
-
-	for _, tutor := range tutorModels {
-		result = append(result, toDomainTutor(tutor))
-	}
-
-	return result, nil
-}
-
-func (r *PostgresTutoringRepository) Create(tutoring domain.Tutoring) (domain.Tutoring, error) {
-	created := toModelTutoring(tutoring)
-
-	var tutorsResult []domain.Tutor
+	createdModel.Tutors = tutorModels
 
 	err := r.db.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Create(&created).Error; err != nil {
+		if err := tx.Create(&createdModel).Error; err != nil {
 			return err
 		}
 
-		result, err := replaceTutors(tx, created.ID, tutoring.Tutors)
-		if err != nil {
+		if err := tx.Preload("Tutors").First(&createdModel, createdModel.ID).Error; err != nil {
 			return err
 		}
-
-		tutorsResult = result
 
 		return nil
 	})
@@ -109,10 +81,7 @@ func (r *PostgresTutoringRepository) Create(tutoring domain.Tutoring) (domain.Tu
 		return domain.Tutoring{}, err
 	}
 
-	result := toDomainTutoring(created)
-	result.Tutors = tutorsResult
-
-	return result, nil
+	return toDomainTutoring(createdModel), nil
 }
 
 func (r *PostgresTutoringRepository) List() ([]domain.Tutoring, error) {
@@ -141,23 +110,28 @@ func (r *PostgresTutoringRepository) FindByID(id int) (domain.Tutoring, error) {
 	return toDomainTutoring(model), nil
 }
 
-func (r *PostgresTutoringRepository) Update(tutoring domain.Tutoring) (domain.Tutoring, error) {
-	updated := toModelTutoring(tutoring)
-
-	var tutorsResult []domain.Tutor
+func (r *PostgresTutoringRepository) Update(tutoring domain.Tutoring, updatedFields []string) (domain.Tutoring, error) {
+	updatedModel := toModelTutoring(tutoring)
 
 	err := r.db.Transaction(func(tx *gorm.DB) error {
 
 		if err := tx.
-			Model(&models.TutoringModel{}).
-			Where("id = ?", tutoring.ID).
-			Updates(updated).Error; err != nil {
+			Model(&models.TutoringModel{ID: updatedModel.ID}).
+			Select(updatedFields).
+			Updates(updatedModel).Error; err != nil {
 			return err
 		}
 
-		var err error
-		tutorsResult, err = replaceTutors(tx, updated.ID, tutoring.Tutors)
-		if err != nil {
+		var tutorModels []models.TutorModel
+		for _, tutor := range tutoring.Tutors {
+			tutorModels = append(tutorModels, models.TutorModel{ID: tutor.ID})
+		}
+
+		if err := tx.Model(&updatedModel).Association("Tutors").Replace(&tutorModels); err != nil {
+			return err
+		}
+
+		if err := tx.Preload("Tutors").First(&updatedModel, updatedModel.ID).Error; err != nil {
 			return err
 		}
 
@@ -168,10 +142,7 @@ func (r *PostgresTutoringRepository) Update(tutoring domain.Tutoring) (domain.Tu
 		return domain.Tutoring{}, err
 	}
 
-	result := toDomainTutoring(updated)
-	result.Tutors = tutorsResult
-
-	return result, nil
+	return toDomainTutoring(updatedModel), nil
 }
 
 func (r *PostgresTutoringRepository) Delete(id int) error {

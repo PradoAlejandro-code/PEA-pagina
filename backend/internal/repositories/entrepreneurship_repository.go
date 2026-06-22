@@ -29,7 +29,7 @@ type EntrepreneurshipRepository interface {
 	Create(entrepreneurship domain.Entrepreneurship) (domain.Entrepreneurship, error)
 	List() ([]domain.Entrepreneurship, error)
 	FindByID(id int) (domain.Entrepreneurship, error)
-	Update(entrepreneurship domain.Entrepreneurship) (domain.Entrepreneurship, error)
+	Update(entrepreneurship domain.Entrepreneurship, updatedFields []string) (domain.Entrepreneurship, error)
 	Delete(id int) error
 }
 
@@ -78,12 +78,13 @@ func (r *PostgresEntrepreneurshipRepository) FindByID(id int) (domain.Entreprene
 	return toDomainEntrepreneurship(model), nil
 }
 
-func (r *PostgresEntrepreneurshipRepository) Update(entrepreneurship domain.Entrepreneurship) (domain.Entrepreneurship, error) {
+func (r *PostgresEntrepreneurshipRepository) Update(entrepreneurship domain.Entrepreneurship, updatedFields []string) (domain.Entrepreneurship, error) {
 	model := toModelEntrepreneurship(entrepreneurship)
 
 	err := r.db.
 		Model(&models.EntrepreneurshipModel{}).
 		Where("id = ?", model.ID).
+		Select(updatedFields).
 		Updates(&model).Error
 
 	if err != nil {

@@ -3,6 +3,7 @@ package services
 import (
 	"PeaBackEnd/internal/domain"
 	"PeaBackEnd/internal/repositories"
+	"PeaBackEnd/internal/repositories/models"
 )
 
 type TutorService interface {
@@ -51,7 +52,11 @@ func (s *tutorService) FindByID(id int) (domain.Tutor, error) {
 }
 
 func (s *tutorService) Update(tutor domain.Tutor) (domain.Tutor, error) {
-	updated, err := s.repo.Update(tutor)
+	updatableFields := []string{
+		string(models.TutorName),
+	}
+
+	updated, err := s.repo.Update(tutor, updatableFields)
 	if err != nil {
 		return domain.Tutor{}, err
 	}

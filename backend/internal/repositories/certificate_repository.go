@@ -12,7 +12,7 @@ type CertificateRepository interface {
 	Create(certificate domain.Certificate) (domain.Certificate, error)
 	List() ([]domain.Certificate, error)
 	FindByID(id int) (domain.Certificate, error)
-	Update(domain.Certificate) (domain.Certificate, error)
+	Update(certificate domain.Certificate, updatedFields []string) (domain.Certificate, error)
 	Delete(id int) error
 }
 
@@ -88,12 +88,13 @@ func (r *PostgresCertificateRepository) FindByID(id int) (domain.Certificate, er
 	return toDomainCertificate(model), nil
 }
 
-func (r *PostgresCertificateRepository) Update(certificate domain.Certificate) (domain.Certificate, error) {
+func (r *PostgresCertificateRepository) Update(certificate domain.Certificate, updatedFields []string) (domain.Certificate, error) {
 	updated := toModelCertificate(certificate)
 
 	result := r.db.
 		Model(&models.CertificateModel{}).
 		Where("id = ?", certificate.ID).
+		Select(updatedFields).
 		Updates(updated)
 
 	if result.Error != nil {

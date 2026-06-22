@@ -11,7 +11,7 @@ type TutorRepository interface {
 	Create(tutor domain.Tutor) (domain.Tutor, error)
 	List() ([]domain.Tutor, error)
 	FindByID(id int) (domain.Tutor, error)
-	Update(domain.Tutor) (domain.Tutor, error)
+	Update(tutor domain.Tutor, updatedFields []string) (domain.Tutor, error)
 	Delete(id int) error
 }
 
@@ -74,12 +74,15 @@ func (r *PostgresTutorRepository) FindByID(id int) (domain.Tutor, error) {
 	return toDomainTutor(model), nil
 }
 
-func (r *PostgresTutorRepository) Update(tutor domain.Tutor) (domain.Tutor, error) {
+func (r *PostgresTutorRepository) Update(tutor domain.Tutor, updatedFields []string) (domain.Tutor, error) {
 	model := toModelTutor(tutor)
-	if err := r.db.
+	err := r.db.
 		Model(&models.TutorModel{}).
 		Where("id = ?", model.ID).
-		Updates(&model).Error; err != nil {
+		Select(updatedFields).
+		Updates(&model).Error
+
+	if err != nil {
 		return domain.Tutor{}, err
 	}
 

@@ -3,6 +3,7 @@ package services
 import (
 	"PeaBackEnd/internal/domain"
 	"PeaBackEnd/internal/repositories"
+	"PeaBackEnd/internal/repositories/models"
 	"PeaBackEnd/internal/storage"
 	"mime/multipart"
 )
@@ -65,7 +66,12 @@ func (s *entrepreneurshipService) FindByID(id int) (domain.Entrepreneurship, err
 }
 
 func (s *entrepreneurshipService) Update(entrepreneurship domain.Entrepreneurship) (domain.Entrepreneurship, error) {
-	updated, err := s.repo.Update(entrepreneurship)
+	updatableFields := []string{
+		string(models.EntrepreneurshipName),
+		string(models.EntrepreneurshipContactURL),
+	}
+
+	updated, err := s.repo.Update(entrepreneurship, updatableFields)
 	if err != nil {
 		return domain.Entrepreneurship{}, err
 	}
@@ -91,6 +97,10 @@ func (s *entrepreneurshipService) Delete(id int) error {
 }
 
 func (s *entrepreneurshipService) UpdateFile(id int, file *multipart.FileHeader) (string, error) {
+	patchPath := []string{
+		string(models.EntrepreneurshipImagePath),
+	}
+
 	found, err := s.repo.FindByID(id)
 	if err != nil {
 		return "", err
@@ -104,7 +114,7 @@ func (s *entrepreneurshipService) UpdateFile(id int, file *multipart.FileHeader)
 	oldPath := found.ImagePath
 	found.ImagePath = newPath
 
-	updated, err := s.repo.Update(found)
+	updated, err := s.repo.Update(found, patchPath)
 	if err != nil {
 		_ = s.storage.Delete(newPath)
 		return "", err

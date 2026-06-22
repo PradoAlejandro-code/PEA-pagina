@@ -16,6 +16,7 @@ func RegisterRoutes(
 	tutorialHandler *handlers.TutorialHandler,
 	tutorialSuggestionHandler *handlers.TutorialSuggestionHandler,
 	tutoringHandler *handlers.TutoringHandler,
+	newHandler *handlers.NewHandler,
 ) {
 	certificates := router.Group("/certificates")
 	{
@@ -92,5 +93,15 @@ func RegisterRoutes(
 		tutorings.PUT("/:id", tutoringHandler.Update)
 		tutorings.DELETE("/:id", tutoringHandler.Delete)
 		tutorings.PATCH("/:id/file", tutoringHandler.UpdateFile)
+	}
+
+	news := router.Group("/news")
+	{
+		news.POST("", newHandler.Create)
+		news.GET("", newHandler.List)
+		news.GET("/:id", newHandler.FindByID)
+		news.PUT("/:id", newHandler.Update)
+		news.DELETE("/:id", newHandler.Delete)
+		news.PATCH("/:id/file", newHandler.UpdateFile)
 	}
 }

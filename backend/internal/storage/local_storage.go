@@ -37,6 +37,7 @@ const (
 	DiscountFolder         = "discounts"
 	TutoringFolder         = "tutorings"
 	EntrepreneurshipFolder = "entrepreneurships"
+	NewFolder              = "news"
 
 	MaxImageSize int64 = 10 << 20  // 10 MB
 	MaxPDFSize   int64 = 20 << 20  // 20 MB

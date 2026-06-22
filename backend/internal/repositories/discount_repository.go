@@ -35,7 +35,7 @@ type DiscountRepository interface {
 	Create(discount domain.Discount) (domain.Discount, error)
 	List() ([]domain.Discount, error)
 	FindByID(id int) (domain.Discount, error)
-	Update(discount domain.Discount) (domain.Discount, error)
+	Update(discount domain.Discount, updatedFields []string) (domain.Discount, error)
 	Delete(id int) error
 }
 
@@ -84,12 +84,13 @@ func (r *PostgresDiscountRepository) FindByID(id int) (domain.Discount, error) {
 	return toDomainDiscount(model), nil
 }
 
-func (r *PostgresDiscountRepository) Update(discount domain.Discount) (domain.Discount, error) {
+func (r *PostgresDiscountRepository) Update(discount domain.Discount, updatedFields []string) (domain.Discount, error) {
 	model := toModelDiscount(discount)
 
 	err := r.db.
 		Model(&models.DiscountModel{}).
 		Where("id = ?", model.ID).
+		Select(updatedFields).
 		Updates(&model).Error
 
 	if err != nil {

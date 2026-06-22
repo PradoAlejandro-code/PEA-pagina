@@ -31,7 +31,7 @@ type CurriculumRepository interface {
 	Create(curriculum domain.Curriculum) (domain.Curriculum, error)
 	List() ([]domain.Curriculum, error)
 	FindByID(id int) (domain.Curriculum, error)
-	Update(curriculum domain.Curriculum) (domain.Curriculum, error)
+	Update(curriculum domain.Curriculum, updatedFields []string) (domain.Curriculum, error)
 	Delete(id int) error
 }
 
@@ -80,12 +80,13 @@ func (r *PostgresCurriculumRepository) FindByID(id int) (domain.Curriculum, erro
 	return toDomainCurriculum(model), nil
 }
 
-func (r *PostgresCurriculumRepository) Update(curriculum domain.Curriculum) (domain.Curriculum, error) {
+func (r *PostgresCurriculumRepository) Update(curriculum domain.Curriculum, updatedFields []string) (domain.Curriculum, error) {
 	model := toModelCurriculum(curriculum)
 
 	err := r.db.
 		Model(&models.CurriculumModel{}).
 		Where("id = ?", model.ID).
+		Select(updatedFields).
 		Updates(&model).Error
 
 	if err != nil {

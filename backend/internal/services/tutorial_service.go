@@ -3,6 +3,7 @@ package services
 import (
 	"PeaBackEnd/internal/domain"
 	"PeaBackEnd/internal/repositories"
+	"PeaBackEnd/internal/repositories/models"
 	"PeaBackEnd/internal/storage"
 	"mime/multipart"
 )
@@ -65,7 +66,11 @@ func (s *tutorialService) FindByID(id int) (domain.Tutorial, error) {
 }
 
 func (s *tutorialService) Update(tutorial domain.Tutorial) (domain.Tutorial, error) {
-	updated, err := s.repo.Update(tutorial)
+	updatableFields := []string{
+		string(models.TutorialName),
+	}
+
+	updated, err := s.repo.Update(tutorial, updatableFields)
 	if err != nil {
 		return domain.Tutorial{}, err
 	}
@@ -91,6 +96,10 @@ func (s *tutorialService) Delete(id int) error {
 }
 
 func (s *tutorialService) UpdateFile(id int, file *multipart.FileHeader) (string, error) {
+	patchPath := []string{
+		string(models.TutorialVideoPath),
+	}
+
 	found, err := s.repo.FindByID(id)
 	if err != nil {
 		return "", err
@@ -105,7 +114,7 @@ func (s *tutorialService) UpdateFile(id int, file *multipart.FileHeader) (string
 	oldPath := found.VideoPath
 	found.VideoPath = newPath
 
-	updated, err := s.repo.Update(found)
+	updated, err := s.repo.Update(found, patchPath)
 	if err != nil {
 		_ = s.storage.Delete(newPath)
 		return "", err

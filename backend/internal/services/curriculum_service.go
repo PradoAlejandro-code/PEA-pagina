@@ -3,6 +3,7 @@ package services
 import (
 	"PeaBackEnd/internal/domain"
 	"PeaBackEnd/internal/repositories"
+	"PeaBackEnd/internal/repositories/models"
 	"PeaBackEnd/internal/storage"
 	"mime/multipart"
 )
@@ -65,7 +66,12 @@ func (s *curriculumService) FindByID(id int) (domain.Curriculum, error) {
 }
 
 func (s *curriculumService) Update(curriculum domain.Curriculum) (domain.Curriculum, error) {
-	updated, err := s.repo.Update(curriculum)
+	var updatableFields = []string{
+		string(models.CurriculumMajor),
+		string(models.CurriculumInstitute),
+	}
+
+	updated, err := s.repo.Update(curriculum, updatableFields)
 	if err != nil {
 		return domain.Curriculum{}, err
 	}
@@ -91,6 +97,10 @@ func (s *curriculumService) Delete(id int) error {
 }
 
 func (s *curriculumService) UpdateFile(id int, file *multipart.FileHeader) (string, error) {
+	var patchPath = []string{
+		string(models.CurriculumImagePath),
+	}
+
 	found, err := s.repo.FindByID(id)
 	if err != nil {
 		return "", err
@@ -105,7 +115,7 @@ func (s *curriculumService) UpdateFile(id int, file *multipart.FileHeader) (stri
 	oldPath := found.ImagePath
 	found.ImagePath = newPath
 
-	updated, err := s.repo.Update(found)
+	updated, err := s.repo.Update(found, patchPath)
 	if err != nil {
 		_ = s.storage.Delete(newPath)
 		return "", err

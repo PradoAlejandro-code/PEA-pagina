@@ -39,6 +39,7 @@ func main() {
 	tutorialRepository := repositories.NewPostgresTutorialRepository(db)
 	tutorialSuggestionRepository := repositories.NewPostgresTutorialSuggestionRepository(db)
 	tutoringRepository := repositories.NewPostgresTutoringRepository(db)
+	newRepository := repositories.NewPostgresNewRepository(db)
 
 	//services
 
@@ -50,6 +51,7 @@ func main() {
 	tutorialService := services.NewTutorialService(tutorialRepository, fileStorage)
 	tutorialSuggestionService := services.NewTutorialSuggestionService(tutorialSuggestionRepository)
 	tutoringService := services.NewTutoringService(tutoringRepository, fileStorage)
+	newService := services.NewNewService(newRepository, fileStorage)
 
 	//handlers
 
@@ -61,6 +63,7 @@ func main() {
 	tutorialHandler := handlers.NewTutorialHandler(tutorialService)
 	tutorialSuggestionHandler := handlers.NewTutorialSuggestionHandler(tutorialSuggestionService)
 	tutoringHandler := handlers.NewTutoringHandler(tutoringService)
+	newHandler := handlers.NewNewHandler(newService)
 
 	router := gin.New()
 	router.Use(gin.Logger())
@@ -88,6 +91,7 @@ func main() {
 		tutorialHandler,
 		tutorialSuggestionHandler,
 		tutoringHandler,
+		newHandler,
 	)
 
 	log.Printf("Local:   http://localhost:8080")

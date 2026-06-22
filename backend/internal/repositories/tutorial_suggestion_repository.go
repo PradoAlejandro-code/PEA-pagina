@@ -11,7 +11,7 @@ type TutorialSuggestionRepository interface {
 	Create(tutorialSuggestion domain.TutorialSuggestion) (domain.TutorialSuggestion, error)
 	List() ([]domain.TutorialSuggestion, error)
 	FindByID(id int) (domain.TutorialSuggestion, error)
-	Update(domain.TutorialSuggestion) (domain.TutorialSuggestion, error)
+	Update(totorialSuggestion domain.TutorialSuggestion, updatedFields []string) (domain.TutorialSuggestion, error)
 	Delete(id int) error
 }
 
@@ -76,12 +76,15 @@ func (r *PostgresTutorialSuggestionRepository) FindByID(id int) (domain.Tutorial
 	return toDomainTutorialSuggestion(model), nil
 }
 
-func (r *PostgresTutorialSuggestionRepository) Update(tutorialSuggestion domain.TutorialSuggestion) (domain.TutorialSuggestion, error) {
+func (r *PostgresTutorialSuggestionRepository) Update(tutorialSuggestion domain.TutorialSuggestion, updatedFields []string) (domain.TutorialSuggestion, error) {
 	model := toModelTutorialSuggestion(tutorialSuggestion)
-	if err := r.db.
+	err := r.db.
 		Model(&models.TutorialSuggestionModel{}).
 		Where("id = ?", model.ID).
-		Updates(&model).Error; err != nil {
+		Select(updatedFields).
+		Updates(&model).Error
+
+	if err != nil {
 		return domain.TutorialSuggestion{}, err
 	}
 

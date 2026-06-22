@@ -3,6 +3,7 @@ package services
 import (
 	"PeaBackEnd/internal/domain"
 	"PeaBackEnd/internal/repositories"
+	"PeaBackEnd/internal/repositories/models"
 	"PeaBackEnd/internal/storage"
 	"mime/multipart"
 )
@@ -66,7 +67,12 @@ func (s *certificateService) FindByID(id int) (domain.Certificate, error) {
 }
 
 func (s *certificateService) Update(certificate domain.Certificate) (domain.Certificate, error) {
-	updated, err := s.repo.Update(certificate)
+	var updatableFields = []string{
+		string(models.CertificateName),
+		string(models.CertificateFree),
+	}
+
+	updated, err := s.repo.Update(certificate, updatableFields)
 	if err != nil {
 		return domain.Certificate{}, err
 	}
@@ -92,6 +98,10 @@ func (s *certificateService) Delete(id int) error {
 }
 
 func (s *certificateService) UpdateFile(id int, file *multipart.FileHeader) (string, error) {
+	var patchPath = []string{
+		string(models.CertificatePDFPath),
+	}
+
 	found, err := s.repo.FindByID(id)
 	if err != nil {
 		return "", err
@@ -106,7 +116,7 @@ func (s *certificateService) UpdateFile(id int, file *multipart.FileHeader) (str
 	oldPath := found.PDFPath
 	found.PDFPath = newPath
 
-	updated, err := s.repo.Update(found)
+	updated, err := s.repo.Update(found, patchPath)
 	if err != nil {
 		_ = s.storage.Delete(newPath)
 		return "", err
