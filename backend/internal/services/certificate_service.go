@@ -30,7 +30,7 @@ func NewCertificateService(repo repositories.CertificateRepository, storage stor
 }
 
 func (s *certificateService) Create(certificate domain.Certificate, file *multipart.FileHeader) (domain.Certificate, error) {
-	path, err := s.storage.Save(file, storage.CertificateFolder, storage.MaxPDFSize, storage.PDFExtensions, storage.VideoMimeTypes)
+	path, err := s.storage.Save(file, storage.CertificateFolder, storage.MaxPDFSize, storage.PDFExtensions, storage.PDFMimeTypes)
 
 	if err != nil {
 		return domain.Certificate{}, err
@@ -107,7 +107,7 @@ func (s *certificateService) UpdateFile(id int, file *multipart.FileHeader) (str
 		return "", err
 	}
 
-	newPath, err := s.storage.Save(file, storage.CertificateFolder, storage.MaxPDFSize, storage.PDFExtensions, storage.VideoMimeTypes)
+	newPath, err := s.storage.Save(file, storage.CertificateFolder, storage.MaxPDFSize, storage.PDFExtensions, storage.PDFMimeTypes)
 
 	if err != nil {
 		return "", err

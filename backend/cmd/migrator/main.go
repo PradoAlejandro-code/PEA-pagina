@@ -3,6 +3,7 @@ package main
 import (
 	"PeaBackEnd/internal/config"
 	"PeaBackEnd/internal/database"
+	"PeaBackEnd/internal/domain"
 	"PeaBackEnd/internal/repositories/models"
 	"log"
 )
@@ -21,6 +22,7 @@ func main() {
 	log.Println("Starting database migrations...")
 
 	err = db.AutoMigrate(
+		&domain.Registro{},
 		&models.CertificateModel{},
 		&models.CurriculumModel{},
 		&models.DiscountModel{},

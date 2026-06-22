@@ -94,6 +94,18 @@ func main() {
 		newHandler,
 	)
 
+	createRegistro, listRegistro,
+		findRegistro, updateRegistro,
+		deleteRegistro, countRegistro, patchVotoRegistro := handlers.InitRegistroHandlers(repositories.InitRegistroRepo(db))
+
+	router.POST("/registros", createRegistro)
+	router.GET("/registros", listRegistro)
+	router.GET("/registros/:id", findRegistro)
+	router.DELETE("/registros/:id", deleteRegistro)
+	router.GET("/registros/count", countRegistro)
+	router.PUT("/registros/:id", updateRegistro)
+	router.PATCH("/registros/:id/voto", patchVotoRegistro)
+
 	log.Printf("Local:   http://localhost:8080")
 	err = router.Run(":8080")
 
