@@ -9,16 +9,24 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as AboutRouteImport } from './routes/about'
+import { Route as PadronRouteImport } from './routes/padron'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
-import { Route as DemoTableRouteImport } from './routes/demo/table'
-import { Route as DemoFormSimpleRouteImport } from './routes/demo/form.simple'
-import { Route as DemoFormAddressRouteImport } from './routes/demo/form.address'
+import { Route as NoticiasIdRouteImport } from './routes/noticias.$id'
+import { Route as EstudiantesVideosInstructivosRouteImport } from './routes/estudiantes.videos-instructivos'
+import { Route as EstudiantesPlanesDeEstudioRouteImport } from './routes/estudiantes.planes-de-estudio'
+import { Route as EstudiantesEmprendimientosRouteImport } from './routes/estudiantes.emprendimientos'
+import { Route as EstudiantesDescuentosRouteImport } from './routes/estudiantes.descuentos'
+import { Route as EstudiantesCertificadosRouteImport } from './routes/estudiantes.certificados'
 
-const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
+const PadronRoute = PadronRouteImport.update({
+  id: '/padron',
+  path: '/padron',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -26,95 +34,136 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DemoTanstackQueryRoute = DemoTanstackQueryRouteImport.update({
-  id: '/demo/tanstack-query',
-  path: '/demo/tanstack-query',
+const NoticiasIdRoute = NoticiasIdRouteImport.update({
+  id: '/noticias/$id',
+  path: '/noticias/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DemoTableRoute = DemoTableRouteImport.update({
-  id: '/demo/table',
-  path: '/demo/table',
+const EstudiantesVideosInstructivosRoute =
+  EstudiantesVideosInstructivosRouteImport.update({
+    id: '/estudiantes/videos-instructivos',
+    path: '/estudiantes/videos-instructivos',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const EstudiantesPlanesDeEstudioRoute =
+  EstudiantesPlanesDeEstudioRouteImport.update({
+    id: '/estudiantes/planes-de-estudio',
+    path: '/estudiantes/planes-de-estudio',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const EstudiantesEmprendimientosRoute =
+  EstudiantesEmprendimientosRouteImport.update({
+    id: '/estudiantes/emprendimientos',
+    path: '/estudiantes/emprendimientos',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const EstudiantesDescuentosRoute = EstudiantesDescuentosRouteImport.update({
+  id: '/estudiantes/descuentos',
+  path: '/estudiantes/descuentos',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DemoFormSimpleRoute = DemoFormSimpleRouteImport.update({
-  id: '/demo/form/simple',
-  path: '/demo/form/simple',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoFormAddressRoute = DemoFormAddressRouteImport.update({
-  id: '/demo/form/address',
-  path: '/demo/form/address',
+const EstudiantesCertificadosRoute = EstudiantesCertificadosRouteImport.update({
+  id: '/estudiantes/certificados',
+  path: '/estudiantes/certificados',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/demo/table': typeof DemoTableRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
-  '/demo/form/address': typeof DemoFormAddressRoute
-  '/demo/form/simple': typeof DemoFormSimpleRoute
+  '/admin': typeof AdminRoute
+  '/padron': typeof PadronRoute
+  '/estudiantes/certificados': typeof EstudiantesCertificadosRoute
+  '/estudiantes/descuentos': typeof EstudiantesDescuentosRoute
+  '/estudiantes/emprendimientos': typeof EstudiantesEmprendimientosRoute
+  '/estudiantes/planes-de-estudio': typeof EstudiantesPlanesDeEstudioRoute
+  '/estudiantes/videos-instructivos': typeof EstudiantesVideosInstructivosRoute
+  '/noticias/$id': typeof NoticiasIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/demo/table': typeof DemoTableRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
-  '/demo/form/address': typeof DemoFormAddressRoute
-  '/demo/form/simple': typeof DemoFormSimpleRoute
+  '/admin': typeof AdminRoute
+  '/padron': typeof PadronRoute
+  '/estudiantes/certificados': typeof EstudiantesCertificadosRoute
+  '/estudiantes/descuentos': typeof EstudiantesDescuentosRoute
+  '/estudiantes/emprendimientos': typeof EstudiantesEmprendimientosRoute
+  '/estudiantes/planes-de-estudio': typeof EstudiantesPlanesDeEstudioRoute
+  '/estudiantes/videos-instructivos': typeof EstudiantesVideosInstructivosRoute
+  '/noticias/$id': typeof NoticiasIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/demo/table': typeof DemoTableRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
-  '/demo/form/address': typeof DemoFormAddressRoute
-  '/demo/form/simple': typeof DemoFormSimpleRoute
+  '/admin': typeof AdminRoute
+  '/padron': typeof PadronRoute
+  '/estudiantes/certificados': typeof EstudiantesCertificadosRoute
+  '/estudiantes/descuentos': typeof EstudiantesDescuentosRoute
+  '/estudiantes/emprendimientos': typeof EstudiantesEmprendimientosRoute
+  '/estudiantes/planes-de-estudio': typeof EstudiantesPlanesDeEstudioRoute
+  '/estudiantes/videos-instructivos': typeof EstudiantesVideosInstructivosRoute
+  '/noticias/$id': typeof NoticiasIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/about'
-    | '/demo/table'
-    | '/demo/tanstack-query'
-    | '/demo/form/address'
-    | '/demo/form/simple'
+    | '/admin'
+    | '/padron'
+    | '/estudiantes/certificados'
+    | '/estudiantes/descuentos'
+    | '/estudiantes/emprendimientos'
+    | '/estudiantes/planes-de-estudio'
+    | '/estudiantes/videos-instructivos'
+    | '/noticias/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/about'
-    | '/demo/table'
-    | '/demo/tanstack-query'
-    | '/demo/form/address'
-    | '/demo/form/simple'
+    | '/admin'
+    | '/padron'
+    | '/estudiantes/certificados'
+    | '/estudiantes/descuentos'
+    | '/estudiantes/emprendimientos'
+    | '/estudiantes/planes-de-estudio'
+    | '/estudiantes/videos-instructivos'
+    | '/noticias/$id'
   id:
     | '__root__'
     | '/'
-    | '/about'
-    | '/demo/table'
-    | '/demo/tanstack-query'
-    | '/demo/form/address'
-    | '/demo/form/simple'
+    | '/admin'
+    | '/padron'
+    | '/estudiantes/certificados'
+    | '/estudiantes/descuentos'
+    | '/estudiantes/emprendimientos'
+    | '/estudiantes/planes-de-estudio'
+    | '/estudiantes/videos-instructivos'
+    | '/noticias/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AboutRoute: typeof AboutRoute
-  DemoTableRoute: typeof DemoTableRoute
-  DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
-  DemoFormAddressRoute: typeof DemoFormAddressRoute
-  DemoFormSimpleRoute: typeof DemoFormSimpleRoute
+  AdminRoute: typeof AdminRoute
+  PadronRoute: typeof PadronRoute
+  EstudiantesCertificadosRoute: typeof EstudiantesCertificadosRoute
+  EstudiantesDescuentosRoute: typeof EstudiantesDescuentosRoute
+  EstudiantesEmprendimientosRoute: typeof EstudiantesEmprendimientosRoute
+  EstudiantesPlanesDeEstudioRoute: typeof EstudiantesPlanesDeEstudioRoute
+  EstudiantesVideosInstructivosRoute: typeof EstudiantesVideosInstructivosRoute
+  NoticiasIdRoute: typeof NoticiasIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
+    '/padron': {
+      id: '/padron'
+      path: '/padron'
+      fullPath: '/padron'
+      preLoaderRoute: typeof PadronRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -124,32 +173,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/demo/tanstack-query': {
-      id: '/demo/tanstack-query'
-      path: '/demo/tanstack-query'
-      fullPath: '/demo/tanstack-query'
-      preLoaderRoute: typeof DemoTanstackQueryRouteImport
+    '/noticias/$id': {
+      id: '/noticias/$id'
+      path: '/noticias/$id'
+      fullPath: '/noticias/$id'
+      preLoaderRoute: typeof NoticiasIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/demo/table': {
-      id: '/demo/table'
-      path: '/demo/table'
-      fullPath: '/demo/table'
-      preLoaderRoute: typeof DemoTableRouteImport
+    '/estudiantes/videos-instructivos': {
+      id: '/estudiantes/videos-instructivos'
+      path: '/estudiantes/videos-instructivos'
+      fullPath: '/estudiantes/videos-instructivos'
+      preLoaderRoute: typeof EstudiantesVideosInstructivosRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/demo/form/simple': {
-      id: '/demo/form/simple'
-      path: '/demo/form/simple'
-      fullPath: '/demo/form/simple'
-      preLoaderRoute: typeof DemoFormSimpleRouteImport
+    '/estudiantes/planes-de-estudio': {
+      id: '/estudiantes/planes-de-estudio'
+      path: '/estudiantes/planes-de-estudio'
+      fullPath: '/estudiantes/planes-de-estudio'
+      preLoaderRoute: typeof EstudiantesPlanesDeEstudioRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/demo/form/address': {
-      id: '/demo/form/address'
-      path: '/demo/form/address'
-      fullPath: '/demo/form/address'
-      preLoaderRoute: typeof DemoFormAddressRouteImport
+    '/estudiantes/emprendimientos': {
+      id: '/estudiantes/emprendimientos'
+      path: '/estudiantes/emprendimientos'
+      fullPath: '/estudiantes/emprendimientos'
+      preLoaderRoute: typeof EstudiantesEmprendimientosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/estudiantes/descuentos': {
+      id: '/estudiantes/descuentos'
+      path: '/estudiantes/descuentos'
+      fullPath: '/estudiantes/descuentos'
+      preLoaderRoute: typeof EstudiantesDescuentosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/estudiantes/certificados': {
+      id: '/estudiantes/certificados'
+      path: '/estudiantes/certificados'
+      fullPath: '/estudiantes/certificados'
+      preLoaderRoute: typeof EstudiantesCertificadosRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -157,12 +220,24 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AboutRoute: AboutRoute,
-  DemoTableRoute: DemoTableRoute,
-  DemoTanstackQueryRoute: DemoTanstackQueryRoute,
-  DemoFormAddressRoute: DemoFormAddressRoute,
-  DemoFormSimpleRoute: DemoFormSimpleRoute,
+  AdminRoute: AdminRoute,
+  PadronRoute: PadronRoute,
+  EstudiantesCertificadosRoute: EstudiantesCertificadosRoute,
+  EstudiantesDescuentosRoute: EstudiantesDescuentosRoute,
+  EstudiantesEmprendimientosRoute: EstudiantesEmprendimientosRoute,
+  EstudiantesPlanesDeEstudioRoute: EstudiantesPlanesDeEstudioRoute,
+  EstudiantesVideosInstructivosRoute: EstudiantesVideosInstructivosRoute,
+  NoticiasIdRoute: NoticiasIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
