@@ -32,6 +32,7 @@ func main() {
 		&models.TutorialSuggestionModel{},
 		&models.TutoringModel{},
 		&models.VoteModel{},
+		&models.NewModel{},
 	)
 	if err != nil {
 		log.Fatalf("Database migration error: %v", err)
