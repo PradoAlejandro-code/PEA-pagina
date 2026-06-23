@@ -36,6 +36,7 @@ El backend escucha por defecto en el puerto :8080.
 
   # Correr las migraciones iniciales y poblar el padrón electoral:
   go run cmd/migrator/main.go
+  go run cmd/seed/main.go
 
   # Compilar para producción:
   go build -o pea-api cmd/api/main.go
