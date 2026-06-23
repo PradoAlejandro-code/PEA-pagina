@@ -1,9 +1,9 @@
 package seed
 
 import (
+	"PeaBackEnd/internal/domain"
 	"encoding/csv"
 	"os"
-	"padron/internal/domain"
 	"strconv"
 
 	"gorm.io/gorm"
