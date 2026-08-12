@@ -3,13 +3,15 @@ package dto
 import "time"
 
 type CreateCurriculumRequest struct {
-	Major     string `form:"major"`
-	Institute string `form:"institute"`
+	Major      string `form:"major"`
+	ApuntesURL string `json:"apuntes_url"`
+	Institute  string `form:"institute"`
 }
 
 type UpdateCurriculumRequest struct {
-	Major     string `json:"major"`
-	Institute string `json:"institute"`
+	Major      string `json:"major"`
+	ApuntesURL string `json:"apuntes_url"`
+	Institute  string `json:"institute"`
 }
 
 type UpdateFileCurriculumResponse struct {
@@ -17,9 +19,10 @@ type UpdateFileCurriculumResponse struct {
 }
 
 type CurriculumResponse struct {
-	ID        int       `json:"id"`
-	Major     string    `json:"major"`
-	Institute string    `json:"institute"`
-	ImagePath string    `json:"image_path"`
-	CreatedAt time.Time `json:"created_at"`
+	ID         int       `json:"id"`
+	Major      string    `json:"major"`
+	ApuntesURL string    `json:"apuntes_url"`
+	Institute  string    `json:"institute"`
+	ImagePath  string    `json:"image_path"`
+	CreatedAt  time.Time `json:"created_at"`
 }

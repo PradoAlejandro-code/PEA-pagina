@@ -69,6 +69,7 @@ func (s *curriculumService) Update(curriculum domain.Curriculum) (domain.Curricu
 	var updatableFields = []string{
 		string(models.CurriculumMajor),
 		string(models.CurriculumInstitute),
+		string(curriculum.ApuntesURL),
 	}
 
 	updated, err := s.repo.Update(curriculum, updatableFields)

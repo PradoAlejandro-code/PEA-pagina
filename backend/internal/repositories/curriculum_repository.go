@@ -9,21 +9,23 @@ import (
 
 func toModelCurriculum(curriculum domain.Curriculum) models.CurriculumModel {
 	return models.CurriculumModel{
-		ID:        curriculum.ID,
-		Major:     curriculum.Major,
-		Institute: curriculum.Institute,
-		ImagePath: curriculum.ImagePath,
-		CreatedAt: curriculum.CreatedAt,
+		ID:         curriculum.ID,
+		Major:      curriculum.Major,
+		ApuntesURL: curriculum.ApuntesURL,
+		Institute:  curriculum.Institute,
+		ImagePath:  curriculum.ImagePath,
+		CreatedAt:  curriculum.CreatedAt,
 	}
 }
 
 func toDomainCurriculum(curriculum models.CurriculumModel) domain.Curriculum {
 	return domain.Curriculum{
-		ID:        curriculum.ID,
-		Major:     curriculum.Major,
-		Institute: curriculum.Institute,
-		ImagePath: curriculum.ImagePath,
-		CreatedAt: curriculum.CreatedAt,
+		ID:         curriculum.ID,
+		Major:      curriculum.Major,
+		ApuntesURL: curriculum.ApuntesURL,
+		Institute:  curriculum.Institute,
+		ImagePath:  curriculum.ImagePath,
+		CreatedAt:  curriculum.CreatedAt,
 	}
 }
 
